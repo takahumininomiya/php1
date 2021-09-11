@@ -27,9 +27,9 @@ try {
 		PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 		PDO::MYSQL_ATTR_MULTI_STATEMENTS => false,
 	);
-$pdo = new PDO('mysql:charset=UTF8;dbname=board;host=localhost', 'root', 'password',$option);
+$pdo = new PDO('mysql:charset=UTF8;dbname=board;host=localhost', 'root', 'root',$option);
 }catch(PDOException $e) {
-if( !empty($_POST['btn_submit']) ) {
+ {
 	// 接続エラーのときエラー内容を取得する
     $error_message[] = $e->getMessage();
 }
@@ -65,37 +65,36 @@ if( !empty($_POST['btn_submit']) ) {
 		
 			// ファイルを閉じる
 			fclose( $file_handle);
-
 			$success_message = 'メッセージを書き込みました。';
 		}
 		*/
 			// 書き込み日時を取得
-			$current_date = date("Y-m-d H:i:s");
+		$current_date = date("Y-m-d H:i:s");
 
-			// SQL作成
-			$stmt = $pdo->prepare("INSERT INTO message (view_name, message, post_date) VALUES ( :view_name, :message, :current_date)");
-	
-			// 値をセット
-			$stmt->bindParam( ':view_name', $clean['view_name'], PDO::PARAM_STR);
-			$stmt->bindParam( ':message', $clean['message'], PDO::PARAM_STR);
-			$stmt->bindParam( ':current_date', $current_date, PDO::PARAM_STR);
-	
-			// SQLクエリの実行
-			$res = $stmt->execute();
-			
-			if( $res ) {
-				$success_message = 'メッセージを書き込みました。';
-			} else {
-				$error_message[] = '書き込みに失敗しました。';
-			}
-			
-			// プリペアドステートメントを削除
-			$stmt = null;
+		// SQL作成
+		$stmt = $pdo->prepare("INSERT INTO message (view_name, message, post_date) VALUES ( :view_name, :message, :current_date)");
+
+		// 値をセット
+		$stmt->bindParam( ':view_name', $clean['view_name'], PDO::PARAM_STR);
+		$stmt->bindParam( ':message', $clean['message'], PDO::PARAM_STR);
+		$stmt->bindParam( ':current_date', $current_date, PDO::PARAM_STR);
+
+		// SQLクエリの実行
+		$res = $stmt->execute();
+		
+		if( $res ) {
+			$success_message = 'メッセージを書き込みました。';
+		} else {
+			$error_message[] = '書き込みに失敗しました。';
 		}
+		
+		// プリペアドステートメントを削除
+		$stmt = null;
 	}
 	
 	// データベースの接続を閉じる
 	$pdo = null;
+}
 	
 	
 
